@@ -72,7 +72,6 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Co
             token.Subject.Should().Be("BlazorCleanArchitecture");
 
             token.Claims.First(c => c.Type == JwtRegisteredClaimNames.Email).Value.Should().Be("test@test.com");
-            token.Claims.First(c => c.Type == JwtRegisteredClaimNames.Website).Value.Should().Be("test.com");
         }
 
         [Fact]
@@ -91,7 +90,7 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Co
         [Theory]
         [InlineData(null, "'Username' must not be empty.")]
         [InlineData("abc", "'Username' is not a valid email address.")]
-        [InlineData("testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest@test.com", "The length of 'Username' must be 320 characters or fewer. You entered 453 characters.")]
+        [InlineData("testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest@test.com", "The length of 'Username' must be no more than 320 characters.")]
         public async Task IncorrectUsername(string username, string expectedOutcome)
         {
             var act = async () => await _testing.SendAsync(new Login { Username = username });
@@ -106,7 +105,7 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Co
 
         [Theory]
         [InlineData(null, "'Password' must not be empty.")]
-        [InlineData("a", "The length of 'Password' must be at least 8 characters. You entered 1 characters.")]
+        [InlineData("a", "The length of 'Password' must be at least 8 characters.")]
         [InlineData("aaaaaaaa", "Password must contain atleast 1 number.")]
         [InlineData("Aaaaaaaa1", "Password must contain atleast 1 special character.")]
         [InlineData("aaaaaaaa1!", "Password must contain atleast 1 upper-case character.")]

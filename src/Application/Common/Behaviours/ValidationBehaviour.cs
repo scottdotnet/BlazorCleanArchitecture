@@ -18,11 +18,13 @@ namespace BlazorCleanArchitecture.Application.Common.Behaviours
         {
             if (_validators.Any())
             {
-                var validationResults = await Task.WhenAll(_validators.Select(async v => await v.ValidateAsync(message, cancellationToken)));
-                var failures = validationResults.Where(r => r.Errors.Any()).SelectMany(r => r.Errors).ToList();
+                foreach (var validator in _validators)
+                {
+                    var result = await validator.ValidateAsync(message, cancellationToken);
 
-                if (failures.Any())
-                    throw new ValidationException(failures);
+                    if (result.Errors.Count > 0)
+                        throw new ValidationException(result.Errors);
+                }
             }
 
             return await next(message, cancellationToken);
