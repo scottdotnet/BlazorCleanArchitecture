@@ -1,6 +1,7 @@
 ﻿using AutoMapper.EquivalencyExpression;
 using BlazorCleanArchitecture.Application.Common;
 using BlazorCleanArchitecture.Application.Common.Behaviours;
+using BlazorCleanArchitecture.Shared.Common;
 using FluentValidation;
 using Mediator;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +13,7 @@ namespace BlazorCleanArchitecture.Application
     {
         public static void AddApplication(this IServiceCollection services, params Assembly[] assemblies)
         {
-            assemblies = assemblies.Concat(new[] { ApplicationAssembly.Assembly }).ToArray();
+            assemblies = assemblies.Concat(new[] { SharedAssembly.Assembly, ApplicationAssembly.Assembly }).ToArray();
 
             services.AddAutoMapper(options => options.AddCollectionMappers(), assemblies);
             services.AddValidatorsFromAssemblies(assemblies);

@@ -39,7 +39,7 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests
             where TEntity : class
             => factory.GetScope().GetRequiredService<TContext>().Set<TEntity>();
 
-        public static async Task<TEntity?> FindAsync<TContext, TEntity>(this WebApplicationFactory<Program> factory, params object[] keyValues)
+        public static async Task<TEntity> FindAsync<TContext, TEntity>(this WebApplicationFactory<Program> factory, params object[] keyValues)
             where TContext : DbContext
             where TEntity : class
             => await factory.GetScope().GetRequiredService<TContext>().FindAsync<TEntity>(keyValues);
