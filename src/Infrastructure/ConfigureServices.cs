@@ -1,11 +1,13 @@
 ﻿using BlazorCleanArchitecture.Application.Common.Interfaces;
 using BlazorCleanArchitecture.Infrastructure.Common;
+using BlazorCleanArchitecture.Infrastructure.Common.EntityFramework;
 using BlazorCleanArchitecture.Infrastructure.Data;
 using BlazorCleanArchitecture.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace BlazorCleanArchitecture.Infrastructure
 {
@@ -31,14 +33,14 @@ namespace BlazorCleanArchitecture.Infrastructure
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<ITenantService, TenantService>();
 
-            /*InfrastructureAssembly
+            InfrastructureAssembly
                 .Assembly
-                .DefinedTypes
+                .GetTypes()
                 .Where(t => t.IsAbstract is false)
                 .Where(t => t.IsGenericTypeDefinition is false)
                 .Where(t => typeof(EntityTypeConfigurationDependency).IsAssignableFrom(t))
                 .ToList()
-                .ForEach(t => services.AddScoped(typeof(EntityTypeConfigurationDependency), t));*/
+                .ForEach(t => services.AddScoped(typeof(EntityTypeConfigurationDependency), t));
         }
     }
 }
