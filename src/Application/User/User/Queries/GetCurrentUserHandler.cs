@@ -1,13 +1,8 @@
 ﻿using AutoMapper;
-using BlazorCleanArchitecture.Shared.User.User.Queries;
 using BlazorCleanArchitecture.Shared.User.User;
+using BlazorCleanArchitecture.Shared.User.User.Queries;
 using Mediator;
 using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlazorCleanArchitecture.Application.User.User.Queries
 {

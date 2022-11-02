@@ -2,14 +2,8 @@
 using BlazorCleanArchitecture.Shared.Authentication.Commands;
 using BlazorCleanArchitecture.Shared.Common.Exceptions;
 using FluentAssertions;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Commands
 {

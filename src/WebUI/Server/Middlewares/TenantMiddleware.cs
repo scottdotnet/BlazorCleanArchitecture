@@ -3,7 +3,6 @@ using BlazorCleanArchitecture.Domain.Tenant;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net;
 
 namespace BlazorCleanArchitecture.WebUI.Server.Middlewares
 {
