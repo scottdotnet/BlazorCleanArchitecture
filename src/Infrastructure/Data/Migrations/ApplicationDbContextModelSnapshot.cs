@@ -64,6 +64,51 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
                     ));
                 });
 
+            modelBuilder.Entity("BlazorCleanArchitecture.Domain.User.PasswordReset", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("newsequentialid()");
+
+                    b.Property<DateTime>("Created")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
+
+                    b.Property<DateTime?>("Modified")
+                        .ValueGeneratedOnUpdate()
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ModifiedBy")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("PasswordReset", "USER");
+                });
+
             modelBuilder.Entity("BlazorCleanArchitecture.Domain.User.User", b =>
                 {
                     b.Property<int>("Id")
@@ -162,6 +207,22 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
                                 .HasColumnName("PeriodEnd");
                         }
                     ));
+                });
+
+            modelBuilder.Entity("BlazorCleanArchitecture.Domain.User.PasswordReset", b =>
+                {
+                    b.HasOne("BlazorCleanArchitecture.Domain.User.User", "User")
+                        .WithOne("PasswordReset")
+                        .HasForeignKey("BlazorCleanArchitecture.Domain.User.PasswordReset", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BlazorCleanArchitecture.Domain.User.User", b =>
+                {
+                    b.Navigation("PasswordReset");
                 });
 #pragma warning restore 612, 618
         }

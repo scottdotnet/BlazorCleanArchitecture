@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using BlazorCleanArchitecture.WebUI.Server.Common.Interceptors;
+using BlazorCleanArchitecture.WebUI.Server.Common.Middlewares;
+using BlazorCleanArchitecture.WebUI.Server.Controllers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
 using ProtoBuf.Grpc.Server;
 using System.Net;
@@ -14,8 +18,22 @@ namespace BlazorCleanArchitecture.WebUI.Server
             services.AddRazorPages();
             services.AddHttpContextAccessor();
 
-            services.AddCodeFirstGrpc(options =>
+            services.AddGrpc(options =>
             {
+                options.Interceptors.Add<GrpcExceptionInterceptor>();
+                options.ResponseCompressionAlgorithm = "gzip";
+                options.ResponseCompressionLevel = System.IO.Compression.CompressionLevel.Optimal;
+                options.EnableDetailedErrors = true;
+            });
+            services.AddResponseCompression(opts =>
+            {
+                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                    new[] { "application/octet-stream" });
+            });
+            services.AddCodeFirstGrpc(config =>
+            {
+                config.EnableDetailedErrors = true;
+                config.ResponseCompressionLevel = System.IO.Compression.CompressionLevel.Optimal;
             });
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -53,6 +71,16 @@ namespace BlazorCleanArchitecture.WebUI.Server
                 });
 
             services.AddLogging();
+        }
+
+        public static void UseWebServices(this WebApplication app)
+        {
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseMiddleware<TenantMiddleware>();
+
+            app.MapGrpcService<AuthenticationController>();
         }
     }
 }

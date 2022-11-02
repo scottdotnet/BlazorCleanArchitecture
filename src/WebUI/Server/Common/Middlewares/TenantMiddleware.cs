@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace BlazorCleanArchitecture.WebUI.Server.Middlewares
+namespace BlazorCleanArchitecture.WebUI.Server.Common.Middlewares
 {
     public sealed class TenantMiddleware
     {

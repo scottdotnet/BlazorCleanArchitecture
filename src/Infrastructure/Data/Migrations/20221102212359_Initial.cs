@@ -9,10 +9,10 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "TENANT");
+                name: "USER");
 
             migrationBuilder.EnsureSchema(
-                name: "USER");
+                name: "TENANT");
 
             migrationBuilder.CreateTable(
                 name: "Tenant",
@@ -84,10 +84,48 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
                 .Annotation("SqlServer:TemporalHistoryTableSchema", "USER")
                 .Annotation("SqlServer:TemporalPeriodEndColumnName", "PeriodEnd")
                 .Annotation("SqlServer:TemporalPeriodStartColumnName", "PeriodStart");
+
+            migrationBuilder.CreateTable(
+                name: "PasswordReset",
+                schema: "USER",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "newsequentialid()"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()"),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: false),
+                    Modified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedBy = table.Column<int>(type: "int", nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
+                    TenantId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PasswordReset", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PasswordReset_User_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "USER",
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PasswordReset_UserId",
+                schema: "USER",
+                table: "PasswordReset",
+                column: "UserId",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "PasswordReset",
+                schema: "USER");
+
             migrationBuilder.DropTable(
                 name: "Tenant",
                 schema: "TENANT")

@@ -22,6 +22,7 @@ namespace BlazorCleanArchitecture.Infrastructure.Data
 
         #region User
         public DbSet<User> Users => Set<User>();
+        public DbSet<PasswordReset> PasswordResets => Set<PasswordReset>();
         #endregion
         #endregion
 

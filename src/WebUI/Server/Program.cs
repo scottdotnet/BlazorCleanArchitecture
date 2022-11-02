@@ -2,7 +2,6 @@ using BlazorCleanArchitecture.Application;
 using BlazorCleanArchitecture.Infrastructure;
 using BlazorCleanArchitecture.Shared;
 using BlazorCleanArchitecture.WebUI.Server;
-using BlazorCleanArchitecture.WebUI.Server.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,12 +32,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.UseMiddleware<TenantMiddleware>();
-
-//app.MapGrpcService<AuthenticationController>();
+app.UseWebServices();
 
 app.MapRazorPages();
 app.MapControllers();
