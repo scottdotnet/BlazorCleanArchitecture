@@ -17,6 +17,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
@@ -55,6 +56,9 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests
                 services.RemoveAll<IHttpContextAccessor>()
                     .AddTransient(provider => Mock.Of<IHttpContextAccessor>(s => s.HttpContext == HttpContext));
 
+                services.RemoveAll<ICurrentUserService>()
+                    .AddTransient(provider => Mock.Of(CurrentUserServiceMock));
+
                 services.RemoveAll<ITenantService>()
                     .AddTransient(provider => Mock.Of<ITenantService>(s => s.Tenant == Tenant));
 
@@ -62,6 +66,9 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests
                     .AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Database.ConnectionString, x=> x.MigrationsAssembly(InfrastructureAssembly.Assembly.FullName)));
             });
         }
+
+        private Expression<Func<ICurrentUserService, bool>> CurrentUserServiceMock
+            => s => s.UserId == CurrentUser.Id && s.Username == CurrentUser.Username && s.User() == Task.FromResult(CurrentUser);
 
         public Task InitializeAsync() => Setup();
 
@@ -72,6 +79,8 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests
             await Semaphore.WaitAsync();
 
             await Database.StartAsync();
+
+            await this.CreateAndMigrateAsync<ApplicationDbContext>();
         }
 
         public async Task Cleanup()

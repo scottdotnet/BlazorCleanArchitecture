@@ -22,8 +22,6 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Co
 
         internal async Task Setup()
         {
-            await _testing.CreateAndMigrateAsync<ApplicationDbContext>();
-
             var tenant = new Domain.Tenant.Tenant
             {
                 Name = "Test",
