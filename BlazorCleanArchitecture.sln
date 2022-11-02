@@ -7,19 +7,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6390BDDB
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5FC0120D-B306-44DB-BA18-05DE5ACB97C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "src\Application\Application.csproj", "{24EF3597-77AD-4E83-A55D-B61A3A054B09}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "src\Application\Application.csproj", "{24EF3597-77AD-4E83-A55D-B61A3A054B09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "src\Domain\Domain.csproj", "{E309A6CE-9386-4679-95E6-C0D04E682FAB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "src\Domain\Domain.csproj", "{E309A6CE-9386-4679-95E6-C0D04E682FAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "src\Infrastructure\Infrastructure.csproj", "{0DBF81BC-FDF8-4B53-8413-4353CE3776FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "src\Infrastructure\Infrastructure.csproj", "{0DBF81BC-FDF8-4B53-8413-4353CE3776FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "src\Shared\Shared.csproj", "{211EC583-33F7-4F23-A02E-9DE536E83EB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "src\Shared\Shared.csproj", "{211EC583-33F7-4F23-A02E-9DE536E83EB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUI.Server", "src\WebUI\Server\WebUI.Server.csproj", "{948C59E9-7D9A-4FE3-B3BE-490D62087C78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebUI.Server", "src\WebUI\Server\WebUI.Server.csproj", "{948C59E9-7D9A-4FE3-B3BE-490D62087C78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUI.Client", "src\WebUI\Client\WebUI.Client.csproj", "{9EDDB827-2C31-498F-A837-8561ED0FC7C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebUI.Client", "src\WebUI\Client\WebUI.Client.csproj", "{9EDDB827-2C31-498F-A837-8561ED0FC7C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.IntegrationTests", "tests\Application.IntegrationTests\Application.IntegrationTests.csproj", "{FBBE03FA-6349-409B-975F-6D625EC69D92}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.IntegrationTests", "tests\Application.IntegrationTests\Application.IntegrationTests.csproj", "{FBBE03FA-6349-409B-975F-6D625EC69D92}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUI.GrpcTests", "src\WebUI.GrpcTests\WebUI.GrpcTests.csproj", "{8D4ED84F-A4EC-4508-B1BB-6FCF12CDD4FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +57,10 @@ Global
 		{FBBE03FA-6349-409B-975F-6D625EC69D92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBBE03FA-6349-409B-975F-6D625EC69D92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FBBE03FA-6349-409B-975F-6D625EC69D92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D4ED84F-A4EC-4508-B1BB-6FCF12CDD4FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D4ED84F-A4EC-4508-B1BB-6FCF12CDD4FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D4ED84F-A4EC-4508-B1BB-6FCF12CDD4FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D4ED84F-A4EC-4508-B1BB-6FCF12CDD4FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +73,7 @@ Global
 		{948C59E9-7D9A-4FE3-B3BE-490D62087C78} = {5FC0120D-B306-44DB-BA18-05DE5ACB97C0}
 		{9EDDB827-2C31-498F-A837-8561ED0FC7C5} = {5FC0120D-B306-44DB-BA18-05DE5ACB97C0}
 		{FBBE03FA-6349-409B-975F-6D625EC69D92} = {6390BDDB-FC08-4A82-AE47-97A25065C0C9}
+		{8D4ED84F-A4EC-4508-B1BB-6FCF12CDD4FE} = {6390BDDB-FC08-4A82-AE47-97A25065C0C9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CA4BB982-E9DC-4B7F-BCB4-F10CA7F8D1B3}

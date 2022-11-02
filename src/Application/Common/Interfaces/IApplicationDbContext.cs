@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BlazorCleanArchitecture.Domain.User;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlazorCleanArchitecture.Application.Common.Interfaces
 {
@@ -6,6 +7,7 @@ namespace BlazorCleanArchitecture.Application.Common.Interfaces
     {
         DbSet<Domain.Tenant.Tenant> Tenants { get; }
         DbSet<Domain.User.User> Users { get; }
+        DbSet<PasswordReset> PasswordResets { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }

@@ -15,10 +15,12 @@ namespace BlazorCleanArchitecture.Application.Authentication.Validators
                 {
                     return await cache.GetOrCreateAsync(nameof(Login), async e =>
                     {
-                        return await context.Users.SingleOrDefaultAsync(u => u.Username == username, cancellationToken);
+                        return await context.Users.AsNoTracking().Include(u => u.PasswordReset).SingleOrDefaultAsync(u => u.Username == username, cancellationToken);
                     }) is not null;
                 })
-                .WithMessage("User does not exist.");
+                .WithMessage("User does not exist.")
+                .MustAsync(async (username, cancellationToken) => await Task.FromResult(cache.Get<Domain.User.User>(nameof(Login)).PasswordReset is null))
+                .WithMessage("Password reset is currently outstanding, please reset your password before attempting to login.");
 
             RuleFor(x => x.Password)
                 .MustAsync(async (x, cancellationToken) => await Task.FromResult(cache.Get<Domain.User.User>(nameof(Login)).Password == x))

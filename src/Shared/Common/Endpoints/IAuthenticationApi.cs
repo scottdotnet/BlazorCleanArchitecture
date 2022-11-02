@@ -11,5 +11,13 @@ namespace BlazorCleanArchitecture.Shared.Common.Endpoints
         [OperationContract]
         [Post($"/Authentication/{nameof(Authentication.Commands.Login)}")]
         Task<string> Login(Login request, CancellationToken cancellationToken);
+
+        [OperationContract]
+        [Post($"/Authentication/{nameof(Authentication.Commands.ResetPassword)}")]
+        Task<bool> ResetPassword(ResetPassword request, CancellationToken cancellationToken);
+
+        [OperationContract(IsOneWay = true)]
+        [Post($"/Authentication/{nameof(Authentication.Commands.ForgotPassword)}")]
+        Task ForgotPassword(ForgotPassword request, CancellationToken cancellationToken);
     }
 }

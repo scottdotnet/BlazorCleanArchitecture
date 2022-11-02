@@ -1,4 +1,5 @@
-﻿using BlazorCleanArchitecture.Infrastructure.Data;
+﻿using BlazorCleanArchitecture.Domain.User;
+using BlazorCleanArchitecture.Infrastructure.Data;
 using BlazorCleanArchitecture.Shared.Authentication.Commands;
 using BlazorCleanArchitecture.Shared.Common.Exceptions;
 using FluentAssertions;
@@ -37,6 +38,7 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Co
 
         internal async Task Cleanup()
         {
+            await _testing.ClearAsync<ApplicationDbContext, PasswordReset>();
             await _testing.ClearAsync<ApplicationDbContext, Domain.User.User>();
         }
 
@@ -112,6 +114,21 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Co
             result.Which.Errors.Should().BeEquivalentTo(new Dictionary<string, string[]>
             {
                 { "Password", new[] { expectedOutcome } }
+            });
+        }
+
+        [Fact]
+        public async Task AttemptLoginWithResetPasswordOutstanding()
+        {
+            await _testing.SendAsync(new ForgotPassword { Username = "test@test.com" });
+
+            var act = async () => await _testing.SendAsync(new Login { Username = "test@test.com", Password = "Abcdefgh1!" });
+
+            var result = await act.Should().ThrowAsync<ValidationException>();
+
+            result.Which.Errors.Should().BeEquivalentTo(new Dictionary<string, string[]>
+            {
+                { "Username", new[] { "Password reset is currently outstanding, please reset your password before attempting to login." } }
             });
         }
     }
