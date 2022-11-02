@@ -1,14 +1,9 @@
 ﻿using BlazorCleanArchitecture.Infrastructure.Data;
+using BlazorCleanArchitecture.Shared.Common.Exceptions;
 using BlazorCleanArchitecture.Shared.User.User.Queries;
 using FluentAssertions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit.Abstractions;
 using Xunit;
-using BlazorCleanArchitecture.Shared.Common.Exceptions;
+using Xunit.Abstractions;
 
 namespace BlazorCleanArchitecture.Application.IntegrationTests.User.User.Queries
 {

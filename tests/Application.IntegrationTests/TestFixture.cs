@@ -14,12 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace BlazorCleanArchitecture.Application.IntegrationTests
@@ -63,7 +58,7 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests
                     .AddTransient(provider => Mock.Of<ITenantService>(s => s.Tenant == Tenant));
 
                 services.RemoveAll<DbContextOptions<ApplicationDbContext>>()
-                    .AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Database.ConnectionString, x=> x.MigrationsAssembly(InfrastructureAssembly.Assembly.FullName)));
+                    .AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Database.ConnectionString, x => x.MigrationsAssembly(InfrastructureAssembly.Assembly.FullName)));
             });
         }
 

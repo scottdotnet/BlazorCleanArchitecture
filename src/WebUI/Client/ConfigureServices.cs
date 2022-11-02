@@ -1,5 +1,4 @@
 ﻿using BlazorCleanArchitecture.Shared.Common;
-using BlazorCleanArchitecture.Shared.Common.Endpoints;
 using BlazorCleanArchitecture.Shared.Common.Interfaces;
 using BlazorCleanArchitecture.WebUI.Client.Common.Extensions;
 using BlazorCleanArchitecture.WebUI.Client.Common.Interceptors;

@@ -1,6 +1,5 @@
 ﻿using Grpc.Core;
 using Grpc.Core.Interceptors;
-using Microsoft.Extensions.Logging;
 
 namespace BlazorCleanArchitecture.WebUI.Client.Common.Interceptors
 {

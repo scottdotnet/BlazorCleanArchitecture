@@ -2,7 +2,6 @@ using BlazorCleanArchitecture.Application;
 using BlazorCleanArchitecture.Infrastructure;
 using BlazorCleanArchitecture.Shared;
 using BlazorCleanArchitecture.WebUI.Server;
-using BlazorCleanArchitecture.WebUI.Server.Controllers;
 using BlazorCleanArchitecture.WebUI.Server.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
