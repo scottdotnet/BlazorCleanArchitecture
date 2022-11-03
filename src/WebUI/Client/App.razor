@@ -1,4 +1,5 @@
-﻿<Router AppAssembly="@typeof(App).Assembly">
+﻿@using System.Reflection
+<Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies="assemblies">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
@@ -10,3 +11,22 @@
         </LayoutView>
     </NotFound>
 </Router>
+
+@code {
+    private List<Assembly> assemblies = new();
+
+    private async Task OnNavigateAsync(NavigationContext args)
+    {
+        try
+        {
+            switch (args.Path)
+            {
+
+            }
+        }
+        catch (Exception ex)
+        {
+
+        }
+    }
+}

@@ -23,4 +23,8 @@
     <ProjectReference Include="..\..\Shared\Shared.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<BlazorWebAssemblyLazyLoad Include="BlazorCleanArchitecture.Shared.dll" />
+	</ItemGroup>
+
 </Project>

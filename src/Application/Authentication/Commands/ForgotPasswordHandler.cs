@@ -17,9 +17,12 @@ namespace BlazorCleanArchitecture.Application.Authentication.Commands
 
         public async ValueTask<Unit> Handle(ForgotPassword request, CancellationToken cancellationToken)
         {
-            var user = await _context.Users.SingleOrDefaultAsync(u => u.Username == request.Username, cancellationToken);
+            var user = await _context.Users.Include(u => u.PasswordReset).SingleOrDefaultAsync(u => u.Username == request.Username, cancellationToken);
 
             if (user is null)
+                return Unit.Value;
+
+            if (user.PasswordReset is not null)
                 return Unit.Value;
 
             var reset = new PasswordReset { Id = Guid.NewGuid(), UserId = user.Id, Date = _dateTimeService.UtcNow };
