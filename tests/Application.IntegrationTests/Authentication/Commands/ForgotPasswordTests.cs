@@ -73,6 +73,26 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Co
             result.Should().BeNull();
         }
 
+        [Fact]
+        public async Task ResetAlreadyExists()
+        {
+            await _testing.SendAsync(new ForgotPassword { Username = "test@test.com" });
+
+            var result = await _testing.Entity<ApplicationDbContext, PasswordReset>().Include(x => x.User).ToListAsync();
+
+            result.Should().NotBeNullOrEmpty();
+            result.Should().HaveCount(1);
+            result.First().Should().NotBeNull();
+            result.First().User.Username.Should().Be("test@test.com");
+
+            await _testing.SendAsync(new ForgotPassword { Username = "test@test.com" });
+
+            result = await _testing.Entity<ApplicationDbContext, PasswordReset>().Include(x => x.User).ToListAsync();
+
+            result.Should().NotBeNullOrEmpty();
+            result.Should().HaveCount(1);
+        }
+
         [Theory]
         [InlineData(null, "'Username' must not be empty.")]
         [InlineData("", "'Username' must not be empty.")]
