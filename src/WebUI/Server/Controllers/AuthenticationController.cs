@@ -23,5 +23,9 @@ namespace BlazorCleanArchitecture.WebUI.Server.Controllers
         [HttpPost(nameof(Shared.Authentication.Commands.ResetPassword))]
         public async Task<bool> ResetPassword(ResetPassword request, CancellationToken cancellationToken)
             => await Mediator.Send(request, cancellationToken);
+
+        [HttpPost(nameof(Shared.Authentication.Commands.ValidateMFACode))]
+        public async Task<bool> ValidateMFACode(ValidateMFACode request, CancellationToken cancellationToken)
+            => await Mediator.Send(request, cancellationToken);
     }
 }

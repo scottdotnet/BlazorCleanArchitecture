@@ -15,6 +15,13 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Configuration.Tenant
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
             builder.Property(x => x.Name).IsRequired();
             builder.Property(x => x.Domain).IsRequired();
+
+            builder.HasData(new Domain.Tenant.Tenant
+            {
+                Id = 1,
+                Name = "Main",
+                Domain = "main.com"
+            });
         }
     }
 }
