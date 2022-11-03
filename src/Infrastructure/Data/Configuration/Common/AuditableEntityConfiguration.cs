@@ -1,6 +1,7 @@
 ﻿using BlazorCleanArchitecture.Application.Common.Interfaces;
 using BlazorCleanArchitecture.Domain.Common;
 using BlazorCleanArchitecture.Infrastructure.Common.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BlazorCleanArchitecture.Infrastructure.Data.Configuration.Common
@@ -18,7 +19,7 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Configuration.Common
         {
             ConfigureEntity(builder);
 
-            builder.Property(x => x.Created).ValueGeneratedOnAdd();
+            builder.Property(x => x.Created).ValueGeneratedOnAdd().HasDefaultValueSql("getdate()");
             builder.Property(x => x.CreatedBy);
             builder.Property(x => x.Modified).ValueGeneratedOnUpdate();
             builder.Property(x => x.ModifiedBy);

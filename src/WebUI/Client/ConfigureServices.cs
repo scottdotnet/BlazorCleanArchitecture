@@ -17,7 +17,7 @@ namespace BlazorCleanArchitecture.WebUI.Client
             services.AddAuthorizationCore();
 
             services.AddRefitClients(environment);
-            services.AddGrpcClients();
+            //services.AddGrpcClients();
         }
 
         private static void AddRefitClients(this IServiceCollection services, IWebAssemblyHostEnvironment environment)

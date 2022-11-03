@@ -26,6 +26,8 @@ namespace BlazorCleanArchitecture.WebUI.Server.Common.Middlewares
 
             if (descriptor?.ControllerTypeInfo?.Name == nameof(AuthenticationController))
             {
+                _context.Request.EnableBuffering();
+
                 var request = await _context.Request.ReadFromJsonAsync(descriptor.Parameters[0].ParameterType);
 
                 var requestProperty = request.GetType().GetProperties().FirstOrDefault(p => p.Name == "Username" || p.Name == "UserId");
@@ -35,11 +37,17 @@ namespace BlazorCleanArchitecture.WebUI.Server.Common.Middlewares
 
                 if (requestProperty?.Name == "UserId")
                 {
-                    var user = await _context.RequestServices.GetService<IApplicationDbContext>().Users.SingleOrDefaultAsync(u => u.Id == int.Parse(request.GetType().GetProperty(requestProperty.Name).GetValue(request).ToString()));
+                    var dbcontext = _context.RequestServices.GetService<IApplicationDbContext>();
+
+                    var id = int.Parse(request.GetType().GetProperty(requestProperty.Name).GetValue(request).ToString());
+
+                    var user = await dbcontext.Users.IgnoreQueryFilters().SingleOrDefaultAsync(u => u.Id == id);
 
                     if (user?.TenantId is not null)
                         context.RequestServices.GetService<ITenantService>().Tenant = await GetTenant(user.Username.Split("@")[1]);
                 }
+
+                context.Request.Body.Seek(0, SeekOrigin.Begin);
             }
 
             if (context.Request.Headers.TryGetValue("X-Tenant-Domain", out var tenantDomain))

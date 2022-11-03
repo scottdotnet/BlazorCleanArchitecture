@@ -1,4 +1,6 @@
-﻿using BlazorCleanArchitecture.WebUI.Server.Common.Interceptors;
+﻿using BlazorCleanArchitecture.Shared.Common.Interfaces;
+using BlazorCleanArchitecture.Shared.Common;
+using BlazorCleanArchitecture.WebUI.Server.Common.Interceptors;
 using BlazorCleanArchitecture.WebUI.Server.Common.Middlewares;
 using BlazorCleanArchitecture.WebUI.Server.Controllers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

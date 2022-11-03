@@ -1,7 +1,32 @@
 ﻿@page "/"
+@using BlazorCleanArchitecture.Shared.Authentication.Commands
+@using BlazorCleanArchitecture.Shared.Common.Endpoints
+@inject IAuthenticationApi AuthenticationApi
 
 <PageTitle>Index</PageTitle>
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
+
+@if (mfaimage == null)
+{
+    <p>no image</p>
+}
+else
+{
+    <img src="@mfaimage" />
+}
+
+@code {
+    string mfaimage = null;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            mfaimage = await AuthenticationApi.GenerateMFAQRCode(new GenerateMFAQRCode { UserId = 1 }, new CancellationToken());
+            StateHasChanged();
+        }
+    }
+}

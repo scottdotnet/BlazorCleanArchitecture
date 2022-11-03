@@ -70,7 +70,7 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
                         .Annotation("SqlServer:IsTemporal", true)
                         .Annotation("SqlServer:TemporalPeriodEndColumnName", "PeriodEnd")
                         .Annotation("SqlServer:TemporalPeriodStartColumnName", "PeriodStart"),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()"),
                     CreatedBy = table.Column<int>(type: "int", nullable: false),
                     Modified = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedBy = table.Column<int>(type: "int", nullable: true),
@@ -95,7 +95,7 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "newsequentialid()"),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()"),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()"),
                     CreatedBy = table.Column<int>(type: "int", nullable: false),
                     Modified = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedBy = table.Column<int>(type: "int", nullable: true),
@@ -113,6 +113,18 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                schema: "TENANT",
+                table: "Tenant",
+                columns: new[] { "Id", "Domain", "Name" },
+                values: new object[] { 1, "test.com", "Test" });
+
+            migrationBuilder.InsertData(
+                schema: "USER",
+                table: "User",
+                columns: new[] { "Id", "CreatedBy", "Email", "Enabled", "FirstName", "LastName", "Locked", "LoginAttempts", "MFAKey", "MiddleName", "MobileNumber", "Modified", "ModifiedBy", "Password", "PhoneNumber", "TenantId", "Username" },
+                values: new object[] { 1, 0, "test@test.com", true, "Scott", "Aldinger", false, 0, new Guid("a095c459-6225-4079-9af6-393d1c957109"), null, null, null, null, "Abcdefgh1", null, 1, "test@test.com" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_PasswordReset_UserId",

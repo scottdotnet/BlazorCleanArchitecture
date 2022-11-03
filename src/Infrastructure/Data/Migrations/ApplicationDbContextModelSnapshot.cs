@@ -62,6 +62,14 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
                                 .HasColumnName("PeriodEnd");
                         }
                     ));
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Domain = "test.com",
+                            Name = "Test"
+                        });
                 });
 
             modelBuilder.Entity("BlazorCleanArchitecture.Domain.User.PasswordReset", b =>
@@ -73,7 +81,8 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
 
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
@@ -119,7 +128,8 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
 
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
@@ -210,6 +220,24 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
                                 .HasColumnName("PeriodEnd");
                         }
                     ));
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = 0,
+                            Email = "test@test.com",
+                            Enabled = true,
+                            FirstName = "Scott",
+                            LastName = "Aldinger",
+                            Locked = false,
+                            LoginAttempts = 0,
+                            MFAKey = new Guid("a095c459-6225-4079-9af6-393d1c957109"),
+                            Password = "Abcdefgh1",
+                            TenantId = 1,
+                            Username = "test@test.com"
+                        });
                 });
 
             modelBuilder.Entity("BlazorCleanArchitecture.Domain.User.PasswordReset", b =>
