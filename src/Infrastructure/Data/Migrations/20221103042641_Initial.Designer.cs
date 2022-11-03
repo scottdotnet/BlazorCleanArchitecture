@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221102212359_Initial")]
+    [Migration("20221103042641_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -149,6 +149,9 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
 
                     b.Property<int>("LoginAttempts")
                         .HasColumnType("int");
+
+                    b.Property<Guid>("MFAKey")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("MiddleName")
                         .HasMaxLength(50)

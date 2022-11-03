@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -60,6 +61,7 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
                     Enabled = table.Column<bool>(type: "bit", nullable: false),
                     LoginAttempts = table.Column<int>(type: "int", nullable: false),
                     Locked = table.Column<bool>(type: "bit", nullable: false),
+                    MFAKey = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PeriodEnd = table.Column<DateTime>(type: "datetime2", nullable: false)
                         .Annotation("SqlServer:IsTemporal", true)
                         .Annotation("SqlServer:TemporalPeriodEndColumnName", "PeriodEnd")

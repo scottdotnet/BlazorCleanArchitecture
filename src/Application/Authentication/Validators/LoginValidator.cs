@@ -1,6 +1,7 @@
 ﻿using BlazorCleanArchitecture.Application.Common.Interfaces;
 using BlazorCleanArchitecture.Shared.Authentication.Commands;
 using FluentValidation;
+using Google.Authenticator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -15,7 +16,7 @@ namespace BlazorCleanArchitecture.Application.Authentication.Validators
                 {
                     return await cache.GetOrCreateAsync(nameof(Login), async e =>
                     {
-                        return await context.Users.AsNoTracking().Include(u => u.PasswordReset).SingleOrDefaultAsync(u => u.Username == username, cancellationToken);
+                        return await context.Users.Include(u => u.PasswordReset).SingleOrDefaultAsync(u => u.Username == username, cancellationToken);
                     }) is not null;
                 })
                 .WithMessage("User does not exist.")
@@ -25,6 +26,11 @@ namespace BlazorCleanArchitecture.Application.Authentication.Validators
             RuleFor(x => x.Password)
                 .MustAsync(async (x, cancellationToken) => await Task.FromResult(cache.Get<Domain.User.User>(nameof(Login)).Password == x))
                 .WithMessage("Invalid password.");
+
+            RuleFor(x => x.MFACode)
+                .MustAsync(async (x, cancellationToken) => await Task.FromResult(new TwoFactorAuthenticator().ValidateTwoFactorPIN(cache.Get<Domain.User.User>(nameof(Login)).MFAKey.ToString(), x.ToString())))
+                .WithMessage("Failed to validate multi-factor authentication.")
+                .OverridePropertyName("Multi-factor authentication");
         }
     }
 }

@@ -148,6 +148,9 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
                     b.Property<int>("LoginAttempts")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("MFAKey")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("MiddleName")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");

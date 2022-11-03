@@ -12,6 +12,10 @@ namespace BlazorCleanArchitecture.WebUI.Server.Controllers
         public async Task ForgotPassword(ForgotPassword request, CancellationToken cancellationToken)
             => await Mediator.Send(request, cancellationToken);
 
+        [HttpPost(nameof(Shared.Authentication.Commands.GenerateMFAQRCode))]
+        public async Task<string> GenerateMFAQRCode(GenerateMFAQRCode request, CancellationToken cancellationToken)
+            => await Mediator.Send(request, cancellationToken);
+
         [HttpPost(nameof(Shared.Authentication.Commands.Login))]
         public async Task<string> Login(Login request, CancellationToken cancellationToken)
             => await Mediator.Send(request, cancellationToken);

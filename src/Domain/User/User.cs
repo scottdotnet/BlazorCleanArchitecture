@@ -16,6 +16,7 @@ namespace BlazorCleanArchitecture.Domain.User
         public bool Enabled { get; set; }
         public int LoginAttempts { get; set; }
         public bool Locked { get; set; }
+        public Guid MFAKey { get; set; }
 
         public PasswordReset PasswordReset { get; set; }
     }
