@@ -19,5 +19,9 @@ namespace BlazorCleanArchitecture.Shared.Common.Endpoints
         [OperationContract(IsOneWay = true)]
         [Post($"/Authentication/{nameof(Authentication.Commands.ForgotPassword)}")]
         Task ForgotPassword(ForgotPassword request, CancellationToken cancellationToken);
+
+        [OperationContract]
+        [Post($"/Authentication/{nameof(Authentication.Commands.GenerateMFAQRCode)}")]
+        Task<string> GenerateMFAQRCode(GenerateMFAQRCode request, CancellationToken cancellationToken);
     }
 }

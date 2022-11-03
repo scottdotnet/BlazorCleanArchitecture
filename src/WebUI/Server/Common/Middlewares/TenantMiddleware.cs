@@ -1,5 +1,6 @@
 ﻿using BlazorCleanArchitecture.Application.Common.Interfaces;
 using BlazorCleanArchitecture.Domain.Tenant;
+using BlazorCleanArchitecture.WebUI.Server.Controllers;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
@@ -23,8 +24,23 @@ namespace BlazorCleanArchitecture.WebUI.Server.Common.Middlewares
                 .OfType<ControllerActionDescriptor>()?
                 .FirstOrDefault();
 
-            if (descriptor?.ActionName == nameof(Shared.Authentication.Commands.Login))
-                await HandleLogin();
+            if (descriptor?.ControllerTypeInfo?.Name == nameof(AuthenticationController))
+            {
+                var request = await _context.Request.ReadFromJsonAsync(descriptor.Parameters[0].ParameterType);
+
+                var requestProperty = request.GetType().GetProperties().FirstOrDefault(p => p.Name == "Username" || p.Name == "UserId");
+
+                if (requestProperty?.Name == "Username")
+                    context.RequestServices.GetService<ITenantService>().Tenant = await GetTenant(request.GetType().GetProperty(requestProperty.Name).GetValue(request).ToString().Split("@")[1]);
+
+                if (requestProperty?.Name == "UserId")
+                {
+                    var user = await _context.RequestServices.GetService<IApplicationDbContext>().Users.SingleOrDefaultAsync(u => u.Id == int.Parse(request.GetType().GetProperty(requestProperty.Name).GetValue(request).ToString()));
+
+                    if (user?.TenantId is not null)
+                        context.RequestServices.GetService<ITenantService>().Tenant = await GetTenant(user.Username.Split("@")[1]);
+                }
+            }
 
             if (context.Request.Headers.TryGetValue("X-Tenant-Domain", out var tenantDomain))
                 context.RequestServices.GetService<ITenantService>().Tenant = await GetTenant(tenantDomain);
@@ -33,17 +49,6 @@ namespace BlazorCleanArchitecture.WebUI.Server.Common.Middlewares
                 await HandleAuthenticationToken(authorization);
 
             await _next(context);
-        }
-
-        private async Task HandleLogin()
-        {
-            var login = await _context.Request.ReadFromJsonAsync<Shared.Authentication.Commands.Login>();
-            var domain = login.Username.Split("@")[1];
-
-            var tenant = await GetTenant(domain);
-
-            if (tenant is not null)
-                _context.RequestServices.GetService<ITenantService>().Tenant = tenant;
         }
 
         private async Task HandleAuthenticationToken(string token)

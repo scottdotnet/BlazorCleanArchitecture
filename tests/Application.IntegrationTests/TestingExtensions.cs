@@ -52,6 +52,19 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests
             await context.SaveChangesAsync();
         }
 
+        public static async Task UpdateAsync<TContext, TEntity>(this WebApplicationFactory<Program> factory, TEntity entity)
+            where TContext : DbContext
+            where TEntity : class
+        {
+            using var scope = factory.GetScope();
+
+            var context = scope.GetRequiredService<TContext>();
+
+            context.Update(entity);
+
+            await context.SaveChangesAsync();
+        }
+
         public static async Task ClearAsync<TContext, TEntity>(this WebApplicationFactory<Program> factory)
             where TContext : DbContext
             where TEntity : class

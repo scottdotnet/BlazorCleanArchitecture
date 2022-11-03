@@ -28,6 +28,7 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Configuration.User
             builder.Property(x => x.Enabled).IsRequired();
             builder.Property(x => x.LoginAttempts).IsRequired();
             builder.Property(x => x.Locked).IsRequired();
+            builder.Property(x => x.MFAKey).IsRequired();
         }
     }
 }

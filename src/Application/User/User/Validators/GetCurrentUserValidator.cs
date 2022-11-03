@@ -18,7 +18,7 @@ namespace BlazorCleanArchitecture.Application.User.User.Validators
                         return await context.Users.SingleOrDefaultAsync(u => u.Username == currentUserService.Username, cancellationToken);
                     }) is not null;
                 })
-                .WithName("User")
+                .OverridePropertyName("User")
                 .WithMessage("User does not exist.");
         }
     }

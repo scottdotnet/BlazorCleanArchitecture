@@ -97,7 +97,7 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Co
         [InlineData(null, "'Username' must not be empty.")]
         [InlineData("", "'Username' must not be empty.")]
         [InlineData("abc", "'Username' is not a valid email address.")]
-        [InlineData("testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest@test.com", "The length of 'Username' must be no more than 320 characters.")]
+        [InlineData("testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest@test.com", "The length must be no more than 320 characters.")]
         public async Task InvalidUsername(string username, string expectedError)
         {
             var act = async () => await _testing.SendAsync(new ForgotPassword { Username = username });

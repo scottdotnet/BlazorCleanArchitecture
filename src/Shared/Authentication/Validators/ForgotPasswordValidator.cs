@@ -10,7 +10,7 @@ namespace BlazorCleanArchitecture.Shared.Authentication.Validators
             RuleFor(x => x.Username)
                 .NotEmpty()
                 .MaximumLength(320)
-                .WithMessage("The length of 'Username' must be no more than 320 characters.")
+                .WithMessage("The length must be no more than 320 characters.")
                 .EmailAddress();
         }
     }

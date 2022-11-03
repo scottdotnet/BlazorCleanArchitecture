@@ -1,8 +1,10 @@
-﻿using BlazorCleanArchitecture.Domain.User;
+﻿using BlazorCleanArchitecture.Domain.Tenant;
+using BlazorCleanArchitecture.Domain.User;
 using BlazorCleanArchitecture.Infrastructure.Data;
 using BlazorCleanArchitecture.Shared.Authentication.Commands;
 using BlazorCleanArchitecture.Shared.Common.Exceptions;
 using FluentAssertions;
+using Google.Authenticator;
 using System.IdentityModel.Tokens.Jwt;
 using Xunit;
 
@@ -11,6 +13,16 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Co
     public sealed class LoginTests : IClassFixture<TestFixture>, IAsyncLifetime
     {
         private readonly TestFixture _testing;
+
+        private Domain.User.User User = new Domain.User.User
+        {
+            FirstName = "Test",
+            LastName = "Tester",
+            Username = "test@test.com",
+            Email = "test@test.com",
+            Password = "Abcdefgh1!",
+            MFAKey = Guid.NewGuid()
+        };
 
         public LoginTests(TestFixture testing)
             => _testing = testing;
@@ -23,17 +35,11 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Co
                 Domain = _testing.CurrentUser.Username.Split("@")[1]
             };
 
-            await _testing.AddAsync<ApplicationDbContext, Domain.Tenant.Tenant>(tenant);
+            await _testing.AddAsync<ApplicationDbContext, Tenant>(tenant);
 
-            await _testing.AddAsync<ApplicationDbContext, Domain.User.User>(new Domain.User.User
-            {
-                FirstName = "Test",
-                LastName = "Tester",
-                Username = "test@test.com",
-                Email = "test@test.com",
-                Password = "Abcdefgh1!",
-                TenantId = tenant.Id
-            });
+            User.TenantId = tenant.Id;
+
+            await _testing.AddAsync<ApplicationDbContext, Domain.User.User>(User);
         }
 
         internal async Task Cleanup()
@@ -55,7 +61,12 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Co
         [Fact]
         public async Task LoginSuccessfully()
         {
-            var result = await _testing.SendAsync(new Login { Username = "test@test.com", Password = "Abcdefgh1!" });
+            var result = await _testing.SendAsync(new Login
+            {
+                Username = "test@test.com",
+                Password = "Abcdefgh1!",
+                MFACode = int.Parse(new TwoFactorAuthenticator().GetCurrentPIN(User.MFAKey.ToString()))
+            });
 
             result.Should().NotBeNull();
 
@@ -71,7 +82,7 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Co
         [Fact]
         public async Task UserDoesntExist()
         {
-            var act = async () => await _testing.SendAsync(new Login { Username = "abc@def.xyz", Password = "IncorrectPassword1!" });
+            var act = async () => await _testing.SendAsync(new Login { Username = "abc@def.xyz", Password = "IncorrectPassword1!", MFACode = int.Parse(new TwoFactorAuthenticator().GetCurrentPIN(User.MFAKey.ToString())) });
 
             var result = await act.Should().ThrowAsync<ValidationException>();
 
@@ -84,7 +95,7 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Co
         [Theory]
         [InlineData(null, "'Username' must not be empty.")]
         [InlineData("abc", "'Username' is not a valid email address.")]
-        [InlineData("testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest@test.com", "The length of 'Username' must be no more than 320 characters.")]
+        [InlineData("testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest@test.com", "The length must be no more than 320 characters.")]
         public async Task IncorrectUsername(string username, string expectedOutcome)
         {
             var act = async () => await _testing.SendAsync(new Login { Username = username });
@@ -99,7 +110,7 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Co
 
         [Theory]
         [InlineData(null, "'Password' must not be empty.")]
-        [InlineData("a", "The length of 'Password' must be at least 8 characters.")]
+        [InlineData("a", "The length must be at least 8 characters.")]
         [InlineData("aaaaaaaa", "Password must contain atleast 1 number.")]
         [InlineData("Aaaaaaaa1", "Password must contain atleast 1 special character.")]
         [InlineData("aaaaaaaa1!", "Password must contain atleast 1 upper-case character.")]
@@ -122,13 +133,45 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Co
         {
             await _testing.SendAsync(new ForgotPassword { Username = "test@test.com" });
 
-            var act = async () => await _testing.SendAsync(new Login { Username = "test@test.com", Password = "Abcdefgh1!" });
+            var act = async () => await _testing.SendAsync(new Login { Username = "test@test.com", Password = "Abcdefgh1!", MFACode = int.Parse(new TwoFactorAuthenticator().GetCurrentPIN(User.MFAKey.ToString())) });
 
             var result = await act.Should().ThrowAsync<ValidationException>();
 
             result.Which.Errors.Should().BeEquivalentTo(new Dictionary<string, string[]>
             {
                 { "Username", new[] { "Password reset is currently outstanding, please reset your password before attempting to login." } }
+            });
+        }
+
+        [Fact]
+        public async Task LoginWithInvalidMFA()
+        {
+            var act = async () => await _testing.SendAsync(new Login { Username = "test@test.com", Password = "Abcdefgh1!", MFACode = 123456 });
+
+            var result = await act.Should().ThrowAsync<ValidationException>();
+
+            result.Which.Errors.Should().BeEquivalentTo(new Dictionary<string, string[]>
+            {
+                { "Multi-factor authentication", new[] { "Failed to validate multi-factor authentication." } }
+            });
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(10)]
+        [InlineData(100)]
+        [InlineData(1000)]
+        [InlineData(10000)]
+        [InlineData(1000000)]
+        public async Task MFACodeInvalid(int code)
+        {
+            var act = async () => await _testing.SendAsync(new Login { Username = "test@test.com", Password = "Abcdefgh1!", MFACode = code });
+
+            var result = await act.Should().ThrowAsync<ValidationException>();
+
+            result.Which.Errors.Should().BeEquivalentTo(new Dictionary<string, string[]>
+            {
+                { "MFACode", new[] { "The length must be exactly 6 characters." } }
             });
         }
     }
