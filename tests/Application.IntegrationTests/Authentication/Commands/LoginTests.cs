@@ -10,7 +10,8 @@ using Xunit;
 
 namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Commands
 {
-    public sealed class LoginTests : IClassFixture<TestFixture>, IAsyncLifetime
+    [Collection("BlazorCleanArchitecture.Application.IntegrationTests")]
+    public sealed class LoginTests : IAsyncLifetime
     {
         private readonly TestFixture _testing;
 

@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
+using Respawn;
 using System.Linq.Expressions;
 using Xunit;
 
@@ -43,6 +44,7 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests
         }
 
         private static readonly SemaphoreSlim Semaphore = new SemaphoreSlim(2);
+        private static Respawner _respawner = default!;
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {

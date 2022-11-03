@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221103060915_Initial")]
+    [Migration("20221103194759_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,8 +69,8 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
                         new
                         {
                             Id = 1,
-                            Domain = "test.com",
-                            Name = "Test"
+                            Domain = "main.com",
+                            Name = "Main"
                         });
                 });
 
@@ -229,16 +229,16 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
                             Id = 1,
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedBy = 0,
-                            Email = "test@test.com",
+                            Email = "scott@main.com",
                             Enabled = true,
                             FirstName = "Scott",
                             LastName = "Aldinger",
                             Locked = false,
                             LoginAttempts = 0,
-                            MFAKey = new Guid("a095c459-6225-4079-9af6-393d1c957109"),
+                            MFAKey = new Guid("1d5e8eb0-31be-4c70-8e0a-cc1eac3390a8"),
                             Password = "Abcdefgh1",
                             TenantId = 1,
-                            Username = "test@test.com"
+                            Username = "scott@main.com"
                         });
                 });
 

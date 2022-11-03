@@ -19,8 +19,8 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Configuration.Tenant
             builder.HasData(new Domain.Tenant.Tenant
             {
                 Id = 1,
-                Name = "Test",
-                Domain = "test.com"
+                Name = "Main",
+                Domain = "main.com"
             });
         }
     }

@@ -118,13 +118,13 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
                 schema: "TENANT",
                 table: "Tenant",
                 columns: new[] { "Id", "Domain", "Name" },
-                values: new object[] { 1, "test.com", "Test" });
+                values: new object[] { 1, "main.com", "Main" });
 
             migrationBuilder.InsertData(
                 schema: "USER",
                 table: "User",
                 columns: new[] { "Id", "CreatedBy", "Email", "Enabled", "FirstName", "LastName", "Locked", "LoginAttempts", "MFAKey", "MiddleName", "MobileNumber", "Modified", "ModifiedBy", "Password", "PhoneNumber", "TenantId", "Username" },
-                values: new object[] { 1, 0, "test@test.com", true, "Scott", "Aldinger", false, 0, new Guid("a095c459-6225-4079-9af6-393d1c957109"), null, null, null, null, "Abcdefgh1", null, 1, "test@test.com" });
+                values: new object[] { 1, 0, "scott@main.com", true, "Scott", "Aldinger", false, 0, new Guid("1d5e8eb0-31be-4c70-8e0a-cc1eac3390a8"), null, null, null, null, "Abcdefgh1", null, 1, "scott@main.com" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_PasswordReset_UserId",

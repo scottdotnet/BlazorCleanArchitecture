@@ -15,7 +15,8 @@ using Xunit;
 
 namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Commands
 {
-    public sealed class GenerateMFAQRCodeTests : IClassFixture<TestFixture>, IAsyncLifetime
+    [Collection("BlazorCleanArchitecture.Application.IntegrationTests")]
+    public sealed class GenerateMFAQRCodeTests : IAsyncLifetime
     {
         private readonly TestFixture _testing;
 

@@ -8,7 +8,8 @@ using Xunit;
 
 namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Commands
 {
-    public sealed class ForgotPasswordTests : IClassFixture<TestFixture>, IAsyncLifetime
+    [Collection("BlazorCleanArchitecture.Application.IntegrationTests")]
+    public sealed class ForgotPasswordTests : IAsyncLifetime
     {
         private readonly TestFixture _testing;
 
