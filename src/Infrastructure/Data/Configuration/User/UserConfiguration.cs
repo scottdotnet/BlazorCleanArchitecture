@@ -29,6 +29,21 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Configuration.User
             builder.Property(x => x.LoginAttempts).IsRequired();
             builder.Property(x => x.Locked).IsRequired();
             builder.Property(x => x.MFAKey).IsRequired();
+
+            builder.HasData(new Domain.User.User
+            {
+                Id = 1,
+                FirstName = "Scott",
+                LastName = "Aldinger",
+                Username = "scott@main.com",
+                Email = "scott@main.com",
+                Password = "Abcdefgh1",
+                Enabled = true,
+                LoginAttempts = 0,
+                Locked = false,
+                MFAKey = Guid.NewGuid(),
+                TenantId = 1
+            });
         }
     }
 }
