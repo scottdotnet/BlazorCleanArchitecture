@@ -2,8 +2,10 @@
 using BlazorCleanArchitecture.Infrastructure.Common;
 using BlazorCleanArchitecture.Infrastructure.Common.EntityFramework;
 using BlazorCleanArchitecture.Infrastructure.Data;
+using BlazorCleanArchitecture.Infrastructure.Data.Interceptors;
 using BlazorCleanArchitecture.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,17 +14,18 @@ namespace BlazorCleanArchitecture.Infrastructure
 {
     public static class ConfigureServices
     {
-        public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+        public static void AddInfrastructure(this IServiceCollection services)
         {
-            services.AddDatabase(configuration);
+            services.AddDatabase();
             services.AddServices();
         }
 
-        private static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
+        private static void AddDatabase(this IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(
-                options => options.UseSqlServer(configuration.GetConnectionString("Default"), x => x.MigrationsAssembly(InfrastructureAssembly.Assembly.FullName)));
+            services.AddScoped<IInterceptor, ConnectionStringInitializationInterceptor>();
+            services.AddScoped<IInterceptor, CacheDataInterceptor>();
 
+            services.AddDbContext<ApplicationDbContext>();
             services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
         }
 

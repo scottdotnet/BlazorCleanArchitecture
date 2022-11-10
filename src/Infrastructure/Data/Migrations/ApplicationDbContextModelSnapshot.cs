@@ -17,10 +17,10 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.10")
+                .HasAnnotation("ProductVersion", "7.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("BlazorCleanArchitecture.Domain.Tenant.Tenant", b =>
                 {
@@ -28,7 +28,7 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Domain")
                         .IsRequired()
@@ -53,15 +53,23 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
                     b.ToTable("Tenant", "TENANT");
 
                     b.ToTable(tb => tb.IsTemporal(ttb =>
+                            {
+                                ttb.UseHistoryTable("TenantHistory", "TENANT");
+                                ttb
+                                    .HasPeriodStart("PeriodStart")
+                                    .HasColumnName("PeriodStart");
+                                ttb
+                                    .HasPeriodEnd("PeriodEnd")
+                                    .HasColumnName("PeriodEnd");
+                            }));
+
+                    b.HasData(
+                        new
                         {
-                            ttb
-                                .HasPeriodStart("PeriodStart")
-                                .HasColumnName("PeriodStart");
-                            ttb
-                                .HasPeriodEnd("PeriodEnd")
-                                .HasColumnName("PeriodEnd");
-                        }
-                    ));
+                            Id = 1,
+                            Domain = "main.com",
+                            Name = "Main"
+                        });
                 });
 
             modelBuilder.Entity("BlazorCleanArchitecture.Domain.User.PasswordReset", b =>
@@ -73,7 +81,8 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
 
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
@@ -115,11 +124,12 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
@@ -201,15 +211,33 @@ namespace BlazorCleanArchitecture.Infrastructure.Data.Migrations
                     b.ToTable("User", "USER");
 
                     b.ToTable(tb => tb.IsTemporal(ttb =>
+                            {
+                                ttb.UseHistoryTable("UserHistory", "USER");
+                                ttb
+                                    .HasPeriodStart("PeriodStart")
+                                    .HasColumnName("PeriodStart");
+                                ttb
+                                    .HasPeriodEnd("PeriodEnd")
+                                    .HasColumnName("PeriodEnd");
+                            }));
+
+                    b.HasData(
+                        new
                         {
-                            ttb
-                                .HasPeriodStart("PeriodStart")
-                                .HasColumnName("PeriodStart");
-                            ttb
-                                .HasPeriodEnd("PeriodEnd")
-                                .HasColumnName("PeriodEnd");
-                        }
-                    ));
+                            Id = 1,
+                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = 0,
+                            Email = "scott@main.com",
+                            Enabled = true,
+                            FirstName = "Scott",
+                            LastName = "Aldinger",
+                            Locked = false,
+                            LoginAttempts = 0,
+                            MFAKey = new Guid("a1688513-8ea5-4c64-a3e1-df9171a006a4"),
+                            Password = "Abcdefgh1",
+                            TenantId = 1,
+                            Username = "scott@main.com"
+                        });
                 });
 
             modelBuilder.Entity("BlazorCleanArchitecture.Domain.User.PasswordReset", b =>
