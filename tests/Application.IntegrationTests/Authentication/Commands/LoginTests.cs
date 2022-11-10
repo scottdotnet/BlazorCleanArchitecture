@@ -4,6 +4,7 @@ using BlazorCleanArchitecture.Infrastructure.Data;
 using BlazorCleanArchitecture.Shared.Authentication.Commands;
 using BlazorCleanArchitecture.Shared.Common.Exceptions;
 using FluentAssertions;
+using FluentAssertions.Equivalency;
 using Google.Authenticator;
 using System.IdentityModel.Tokens.Jwt;
 using Xunit;
@@ -65,7 +66,7 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Co
             {
                 Username = "test@test.com",
                 Password = "Abcdefgh1!",
-                MFACode = int.Parse(new TwoFactorAuthenticator().GetCurrentPIN(User.MFAKey.ToString()))
+                MFACode = new TwoFactorAuthenticator().GetCurrentPIN(User.MFAKey.ToString())
             });
 
             result.Should().NotBeNull();
@@ -82,7 +83,7 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Co
         [Fact]
         public async Task UserDoesntExist()
         {
-            var act = async () => await _testing.SendAsync(new Login { Username = "abc@def.xyz", Password = "IncorrectPassword1!", MFACode = int.Parse(new TwoFactorAuthenticator().GetCurrentPIN(User.MFAKey.ToString())) });
+            var act = async () => await _testing.SendAsync(new Login { Username = "abc@def.xyz", Password = "IncorrectPassword1!", MFACode = new TwoFactorAuthenticator().GetCurrentPIN(User.MFAKey.ToString()) });
 
             var result = await act.Should().ThrowAsync<ValidationException>();
 
@@ -133,7 +134,7 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Co
         {
             await _testing.SendAsync(new ForgotPassword { Username = "test@test.com" });
 
-            var act = async () => await _testing.SendAsync(new Login { Username = "test@test.com", Password = "Abcdefgh1!", MFACode = int.Parse(new TwoFactorAuthenticator().GetCurrentPIN(User.MFAKey.ToString())) });
+            var act = async () => await _testing.SendAsync(new Login { Username = "test@test.com", Password = "Abcdefgh1!", MFACode = new TwoFactorAuthenticator().GetCurrentPIN(User.MFAKey.ToString()) });
 
             var result = await act.Should().ThrowAsync<ValidationException>();
 
@@ -146,7 +147,7 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Co
         [Fact]
         public async Task LoginWithInvalidMFA()
         {
-            var act = async () => await _testing.SendAsync(new Login { Username = "test@test.com", Password = "Abcdefgh1!", MFACode = 123456 });
+            var act = async () => await _testing.SendAsync(new Login { Username = "test@test.com", Password = "Abcdefgh1!", MFACode = "123456" });
 
             var result = await act.Should().ThrowAsync<ValidationException>();
 
@@ -157,15 +158,28 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests.Authentication.Co
         }
 
         [Theory]
-        [InlineData(1)]
-        [InlineData(10)]
-        [InlineData(100)]
-        [InlineData(1000)]
-        [InlineData(10000)]
-        [InlineData(1000000)]
-        public async Task MFACodeInvalid(int code)
+        [InlineData("1")]
+        [InlineData("10")]
+        [InlineData("100")]
+        [InlineData("1000")]
+        [InlineData("10000")]
+        [InlineData("1000000")]
+        public async Task MFACodeInvalid(string code)
         {
             var act = async () => await _testing.SendAsync(new Login { Username = "test@test.com", Password = "Abcdefgh1!", MFACode = code });
+
+            var result = await act.Should().ThrowAsync<ValidationException>();
+
+            result.Which.Errors.Should().BeEquivalentTo(new Dictionary<string, string[]>
+            {
+                { "MFACode", new[] { "The length must be exactly 6 characters." } }
+            });
+        }
+
+        [Fact]
+        public async Task ZerosMFACodeValid()
+        {
+            var act = async () => await _testing.SendAsync(new Login { Username = "test@test.com", Password = "Abcdefgh1!", MFACode = "000000" });
 
             var result = await act.Should().ThrowAsync<ValidationException>();
 

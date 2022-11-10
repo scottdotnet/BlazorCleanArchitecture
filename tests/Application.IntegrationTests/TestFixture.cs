@@ -2,6 +2,7 @@
 using BlazorCleanArchitecture.Domain.Tenant;
 using BlazorCleanArchitecture.Infrastructure.Common;
 using BlazorCleanArchitecture.Infrastructure.Data;
+using BlazorCleanArchitecture.Infrastructure.Data.Interceptors;
 using BlazorCleanArchitecture.Shared.User.User;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
@@ -11,6 +12,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
@@ -58,8 +61,15 @@ namespace BlazorCleanArchitecture.Application.IntegrationTests
                     .AddTransient(provider => Mock.Of<ITenantService>(s => s.Tenant == Tenant));
 
                 services.RemoveAll<DbContextOptions<ApplicationDbContext>>()
-                    .AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Database.ConnectionString, x => x.MigrationsAssembly(InfrastructureAssembly.Assembly.FullName)));
+                    .AddDbContext<ApplicationDbContext>();
             });
+
+            builder.ConfigureAppConfiguration(config =>
+                config.AddInMemoryCollection(
+                    new List<KeyValuePair<string, string>>
+                    {
+                        new KeyValuePair<string, string>("ConnectionStrings:Default", Database.ConnectionString)
+                    }));
         }
 
         private Expression<Func<ICurrentUserService, bool>> CurrentUserServiceMock

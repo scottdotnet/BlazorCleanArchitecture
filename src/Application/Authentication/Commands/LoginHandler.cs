@@ -1,5 +1,8 @@
-﻿using BlazorCleanArchitecture.Shared.Authentication.Commands;
+﻿using BlazorCleanArchitecture.Application.Common.Interfaces;
+using BlazorCleanArchitecture.Shared.Authentication.Commands;
+using Google.Authenticator;
 using Mediator;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -11,15 +14,15 @@ namespace BlazorCleanArchitecture.Application.Authentication.Commands
 {
     public sealed class LoginHandler : IRequestHandler<Login, string>
     {
-        private readonly IMemoryCache _cache;
+        private readonly IApplicationDbContext _context;
         private readonly IConfiguration _configuration;
 
-        public LoginHandler(IMemoryCache cache, IConfiguration configuration)
-            => (_cache, _configuration) = (cache, configuration);
+        public LoginHandler(IApplicationDbContext context, IConfiguration configuration)
+            => (_context, _configuration) = (context, configuration);
 
         public async ValueTask<string> Handle(Login request, CancellationToken cancellationToken)
         {
-            var user = await Task.FromResult(_cache.Get<Domain.User.User>(nameof(Login)));
+            var user = await _context.Users.Include(u => u.PasswordReset).SingleOrDefaultAsync(u => u.Username == request.Username, cancellationToken);
 
             var claims = new[]
             {

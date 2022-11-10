@@ -1,0 +1,41 @@
+﻿@page "/authentication/login"
+
+@inject IAuthenticationApi AuthenticationApi
+
+<EditForm Model="login" OnValidSubmit="SubmitValidForm">
+    <FluentValidationValidator />
+
+    <p>
+        <label>Username: </label>
+        <InputText @bind-Value="login.Username" />
+        <ValidationMessage For="(() => login.Username)" />
+    </p>
+
+    <p>
+        <label>Password: </label>
+        <InputText @bind-Value="login.Password" />
+        <ValidationMessage For="(() => login.Password)" />
+    </p>
+
+    <p>
+        <label>MFA Code: </label>
+        <InputText @bind-Value="login.MFACode" />
+        <ValidationMessage For="(() => login.MFACode)" />
+    </p>
+
+    <button type="submit">Login</button>
+</EditForm>
+
+@code {
+    BlazorCleanArchitecture.Shared.Authentication.Commands.Login login = new BlazorCleanArchitecture.Shared.Authentication.Commands.Login();
+
+    private async Task SubmitValidForm()
+    {
+        var result = await AuthenticationApi.Login(login, new CancellationToken());
+
+        if (string.IsNullOrWhiteSpace(result) is false)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+}

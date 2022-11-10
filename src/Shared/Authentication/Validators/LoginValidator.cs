@@ -26,7 +26,7 @@ namespace BlazorCleanArchitecture.Shared.Authentication.Validators
 
             RuleFor(x => x.MFACode)
                 .NotEmpty()
-                .ExclusiveBetween(100000, 999999)
+                .Length(6)
                 .WithMessage("The length must be exactly 6 characters.");
         }
     }

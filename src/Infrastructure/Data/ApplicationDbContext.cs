@@ -2,9 +2,11 @@
 using BlazorCleanArchitecture.Domain.Common;
 using BlazorCleanArchitecture.Domain.Tenant;
 using BlazorCleanArchitecture.Domain.User;
+using BlazorCleanArchitecture.Infrastructure.Common;
 using BlazorCleanArchitecture.Infrastructure.Common.EntityFramework;
 using BlazorCleanArchitecture.Shared.Common.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace BlazorCleanArchitecture.Infrastructure.Data
 {
@@ -14,6 +16,7 @@ namespace BlazorCleanArchitecture.Infrastructure.Data
         private readonly ICurrentUserService _currentUserService;
         private readonly IDateTimeService _dateTimeService;
         private readonly IEnumerable<EntityTypeConfigurationDependency> _configurations;
+        private readonly IEnumerable<IInterceptor> _interceptors;
 
         #region Sets
         #region Tenant
@@ -31,17 +34,21 @@ namespace BlazorCleanArchitecture.Infrastructure.Data
             ITenantService tenantService,
             ICurrentUserService currentUserService,
             IDateTimeService dateTimeService,
-            IEnumerable<EntityTypeConfigurationDependency> configurations
+            IEnumerable<EntityTypeConfigurationDependency> configurations,
+            IEnumerable<IInterceptor> interceptors
             ) : base(options)
         {
             _tenantService = tenantService;
             _currentUserService = currentUserService;
             _dateTimeService = dateTimeService;
             _configurations = configurations;
+            _interceptors = interceptors;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            optionsBuilder.AddInterceptors(_interceptors);
+            optionsBuilder.UseSqlServer(options => options.MigrationsAssembly(InfrastructureAssembly.Assembly.FullName));
             optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
 
@@ -49,28 +56,6 @@ namespace BlazorCleanArchitecture.Infrastructure.Data
         {
             foreach (var configuration in _configurations)
                 configuration.Configure(modelBuilder);
-        }
-
-        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
-        {
-            foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
-            {
-                switch (entry.State)
-                {
-                    case EntityState.Added:
-                        entry.Entity.CreatedBy = entry.Entity?.CreatedBy ?? _currentUserService.UserId;
-                        entry.Entity.Created = _dateTimeService.UtcNow;
-                        entry.Entity.TenantId = _tenantService.Tenant.Id;
-                        break;
-
-                    case EntityState.Modified:
-                        entry.Entity.ModifiedBy = _currentUserService.UserId;
-                        entry.Entity.Modified = _dateTimeService.UtcNow;
-                        break;
-                }
-            }
-
-            return await base.SaveChangesAsync(cancellationToken);
         }
     }
 }

@@ -9,26 +9,29 @@ namespace BlazorCleanArchitecture.Application.Authentication.Validators
 {
     public sealed class LoginValidator : AbstractValidator<Login>
     {
-        public LoginValidator(IMemoryCache cache, IApplicationDbContext context)
+        public LoginValidator(IApplicationDbContext context)
         {
-            RuleFor(x => x.Username)
-                .MustAsync(async (username, cancellationToken) =>
-                {
-                    return await cache.GetOrCreateAsync(nameof(Login), async e =>
-                    {
-                        return await context.Users.Include(u => u.PasswordReset).SingleOrDefaultAsync(u => u.Username == username, cancellationToken);
-                    }) is not null;
-                })
+            RuleFor(x => x)
+                .MustAsync(async (request, cancellationToken) =>
+                    await context.Users.Include(u => u.PasswordReset).SingleOrDefaultAsync(u => u.Username == request.Username, cancellationToken) is not null)
                 .WithMessage("User does not exist.")
-                .MustAsync(async (username, cancellationToken) => await Task.FromResult(cache.Get<Domain.User.User>(nameof(Login)).PasswordReset is null))
-                .WithMessage("Password reset is currently outstanding, please reset your password before attempting to login.");
+                .OverridePropertyName("User");
 
-            RuleFor(x => x.Password)
-                .MustAsync(async (x, cancellationToken) => await Task.FromResult(cache.Get<Domain.User.User>(nameof(Login)).Password == x))
-                .WithMessage("Invalid password.");
+            RuleFor(x => x)
+                .MustAsync(async (request, cancellationToken) =>
+                    (await context.Users.Include(u => u.PasswordReset).SingleOrDefaultAsync(u => u.Username == request.Username, cancellationToken)).PasswordReset is null)
+                .WithMessage("Password reset is currently outstanding, please reset your password before attempting to login.")
+                .OverridePropertyName("User");
 
-            RuleFor(x => x.MFACode)
-                .MustAsync(async (x, cancellationToken) => await Task.FromResult(new TwoFactorAuthenticator().ValidateTwoFactorPIN(cache.Get<Domain.User.User>(nameof(Login)).MFAKey.ToString(), x.ToString())))
+            RuleFor(x => x)
+                .MustAsync(async (request, cancellationToken) =>
+                    (await context.Users.Include(u => u.PasswordReset).SingleOrDefaultAsync(u => u.Username == request.Username, cancellationToken)).Password == request.Password)
+                .WithMessage("Invalid password.")
+                .OverridePropertyName("Password");
+
+            RuleFor(x => x)
+                .MustAsync(async (request, cancellationToken) =>
+                    new TwoFactorAuthenticator().ValidateTwoFactorPIN((await context.Users.Include(u => u.PasswordReset).SingleOrDefaultAsync(u => u.Username == request.Username, cancellationToken)).MFAKey.ToString(), request.MFACode))
                 .WithMessage("Failed to validate multi-factor authentication.")
                 .OverridePropertyName("Multi-factor authentication");
         }
